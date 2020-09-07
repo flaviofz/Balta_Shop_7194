@@ -6,101 +6,104 @@ using Microsoft.EntityFrameworkCore;
 using Shop_7194.Data;
 using Shop_7194.Models;
 
-[Route("categories")]
-public class CategoryController : ControllerBase
+namespace Shop_7194.Controllers
 {
-    [HttpGet]
-    [Route("")]
-    public async Task<ActionResult<List<Category>>> Get(
-        [FromServices] DataContext context
-    )
+    [Route("categories")]
+    public class CategoryController : ControllerBase
     {
-        var categories = await context.Categories.AsNoTracking().ToListAsync();
-
-        return Ok(categories);
-    }
-
-    [HttpGet]
-    [Route("{id:int}")]
-    public async Task<ActionResult<Category>> GetById(
-        int id,
-        [FromServices] DataContext context
+        [HttpGet]
+        [Route("")]
+        public async Task<ActionResult<List<Category>>> Get(
+            [FromServices] DataContext context
         )
-    {
-        var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-
-        return Ok(category);
-    }
-
-    [HttpPost]
-    [Route("")]
-    public async Task<ActionResult<List<Category>>> Post(
-        [FromBody] Category model,
-        [FromServices] DataContext context
-        )
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-        try
         {
-            await context.Categories.AddAsync(model);
-            await context.SaveChangesAsync();
+            var categories = await context.Categories.AsNoTracking().ToListAsync();
 
-            return Ok(model);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = "Erro ao cadastrar categoria: " + e.Message });
-        }
-    }
-
-    [HttpPut]
-    [Route("{id:int}")]
-    public async Task<ActionResult<List<Category>>> Put(
-        int id,
-        [FromBody] Category model,
-        [FromServices] DataContext context)
-    {
-        if (model.Id != id)
-            return NotFound(new { message = "Categoria não encontrada" });
-
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        try
-        {
-            context.Entry<Category>(model).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-            return Ok(model);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = "Erro ao atualizar cartegoria: " + e.Message });
+            return Ok(categories);
         }
 
-    }
-
-    [HttpDelete]
-    [Route("{id:int}")]
-    public async Task<ActionResult<List<Category>>> Delete(
-        int id,
-        [FromServices] DataContext context
-        )
-    {
-        var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-        if (category == null)
-            return NotFound(new { message = "Categoria não encontrada" });
-
-        try
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Category>> GetById(
+            int id,
+            [FromServices] DataContext context
+            )
         {
-            context.Remove(category);
-            await context.SaveChangesAsync();
+            var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
-            return Ok(new { message = "Categoria removida" });
+            return Ok(category);
         }
-        catch (Exception e)
+
+        [HttpPost]
+        [Route("")]
+        public async Task<ActionResult<List<Category>>> Post(
+            [FromBody] Category model,
+            [FromServices] DataContext context
+            )
         {
-            return BadRequest(new { message = "Erro ao deletar cartegoria: " + e.Message });
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                await context.Categories.AddAsync(model);
+                await context.SaveChangesAsync();
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = "Erro ao cadastrar categoria: " + e.Message });
+            }
+        }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult<List<Category>>> Put(
+            int id,
+            [FromBody] Category model,
+            [FromServices] DataContext context)
+        {
+            if (model.Id != id)
+                return NotFound(new { message = "Categoria não encontrada" });
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                context.Entry<Category>(model).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = "Erro ao atualizar cartegoria: " + e.Message });
+            }
+
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<ActionResult<List<Category>>> Delete(
+            int id,
+            [FromServices] DataContext context
+            )
+        {
+            var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            if (category == null)
+                return NotFound(new { message = "Categoria não encontrada" });
+
+            try
+            {
+                context.Remove(category);
+                await context.SaveChangesAsync();
+
+                return Ok(new { message = "Categoria removida" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = "Erro ao deletar cartegoria: " + e.Message });
+            }
         }
     }
 }
